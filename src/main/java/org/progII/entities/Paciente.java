@@ -12,6 +12,7 @@ public class Paciente {
   }
 
   public Paciente(int nroPaciente, String nombre, int telefono) {
+    this.nroPaciente = nroPaciente;
     this.nombre = nombre;
     this.telefono = telefono;
   }

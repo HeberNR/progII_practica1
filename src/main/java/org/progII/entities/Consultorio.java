@@ -1,6 +1,8 @@
 package org.progII.entities;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +16,11 @@ public class Consultorio {
     this.nroConsultorio = nroConsultorio;
     this.medico = medico;
     this.turnos = new ArrayList<>();
+  }
+
+  public void agregarTurno(Date dia, Time hora, int nroPaciente) {
+    Turno nuevoTurno = new Turno(dia, hora, this.nroConsultorio, nroPaciente);
+    this.turnos.add(nuevoTurno);
   }
 
   public void agregarTurno(Turno turno) {
