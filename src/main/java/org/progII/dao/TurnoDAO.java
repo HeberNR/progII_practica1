@@ -16,6 +16,8 @@ public class TurnoDAO implements AdmConection, DAO<Turno, Integer> {
   private static final String sql_getbyid = "SELECT * FROM consultorio_db.turno WHERE id = ?";
   private static final String sql_getall = "SELECT * FROM consultorio_db.turno ORDER BY dia, hora";
 
+  private static final String sql_delete_pintura = "DELETE FROM consultorio_db.turno WHERE nro_consultorio = ? AND dia = ?";
+
   @Override
   public List<Turno> getAll() {
     List<Turno> turnos = new ArrayList<>();
@@ -42,7 +44,6 @@ public class TurnoDAO implements AdmConection, DAO<Turno, Integer> {
   public void insert(Turno objeto) {
     try (Connection conn = obtenerConexion();
          PreparedStatement pst = conn.prepareStatement(sql_insert, Statement.RETURN_GENERATED_KEYS)) {
-
       pst.setDate(1, new java.sql.Date(objeto.getDia().getTime()));
       pst.setTime(2, objeto.getHora());
       pst.setInt(3, objeto.getNroConsultorio());
@@ -86,6 +87,17 @@ public class TurnoDAO implements AdmConection, DAO<Turno, Integer> {
     try (Connection conn = obtenerConexion();
          PreparedStatement pst = conn.prepareStatement(sql_delete)) {
       pst.setInt(1, id);
+      pst.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void deletePorPintura(int nroConsultorio, String fechaStr) {
+    try (Connection conn = obtenerConexion();
+         PreparedStatement pst = conn.prepareStatement(sql_delete_pintura)) {
+      pst.setInt(1, nroConsultorio);
+      pst.setString(2, fechaStr);
       pst.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

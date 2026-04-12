@@ -3,8 +3,10 @@ package org.progII.entities;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.text.SimpleDateFormat;
 
 public class Consultorio {
 
@@ -12,10 +14,14 @@ public class Consultorio {
   private String medico;
   private List<Turno> turnos;
 
+  public Consultorio() {
+    this.turnos = new ArrayList<>();
+  }
+
   public Consultorio(int nroConsultorio, String medico) {
+    this();
     this.nroConsultorio = nroConsultorio;
     this.medico = medico;
-    this.turnos = new ArrayList<>();
   }
 
   public void agregarTurno(Date dia, Time hora, int nroPaciente) {
@@ -24,7 +30,25 @@ public class Consultorio {
   }
 
   public void agregarTurno(Turno turno) {
-    turnos.add(turno);
+    if (turno != null) {
+      this.turnos.add(turno);
+    }
+  }
+
+  public void cancelarTurnosPorDia(Date fechaPintura) {
+    Iterator<Turno> it = turnos.iterator();
+    while (it.hasNext()) {
+      Turno t = it.next();
+      if (esMismoDia(t.getDia(), fechaPintura)) {
+        it.remove();
+      }
+    }
+  }
+
+  private boolean esMismoDia(Date dia1, Date dia2) {
+    if (dia1 == null || dia2 == null) return false;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    return sdf.format(dia1).equals(sdf.format(dia2));
   }
 
   public int getNroConsultorio() {
@@ -51,16 +75,19 @@ public class Consultorio {
     this.turnos = turnos;
   }
 
+
   @Override
   public boolean equals(Object o) {
+    if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Consultorio that = (Consultorio) o;
-    return nroConsultorio == that.nroConsultorio && Objects.equals(medico, that.medico) && Objects.equals(turnos, that.turnos);
+    return nroConsultorio == that.nroConsultorio &&
+        Objects.equals(medico, that.medico);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nroConsultorio, medico, turnos);
+    return Objects.hash(nroConsultorio, medico);
   }
 
   @Override
@@ -68,7 +95,7 @@ public class Consultorio {
     return "Consultorio{" +
         "nroConsultorio=" + nroConsultorio +
         ", medico='" + medico + '\'' +
-        ", turnos=" + turnos +
+        ", cantidadTurnos=" + turnos.size() +
         '}';
   }
 }
